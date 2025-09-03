@@ -2,9 +2,10 @@ from classOBJ import *
 from time import sleep
 import sys
 from os import system
-sys.setrecursionlimit(5000)  # Limite de recursão pra poder usar labs maiores
+sys.setrecursionlimit(100000)  # Limite de recursão pra poder usar labs maiores
 
-
+#Cara isso tem q melhorar muito kkk
+"""
 def WalkDeepSearch(w,lab_map,m,n):
     if((w.CordX, w.CordY) != (m-1, n-1)):
         x, y = w.CordX, w.CordY
@@ -123,6 +124,33 @@ def WalkDeepSearch(w,lab_map,m,n):
     else:
         return 0
 
+"""
+def WalkDeepSearch(w, lab_map, m, n):
+    if (w.CordX, w.CordY) == (m-1, n-1):
+        return 0
+
+    x, y = w.CordX, w.CordY
+    moves = [(-1,0), (0,1), (1,0), (0,-1)]  # N, L, S, O
+
+    # 1) tenta virar à esquerda primeiro e só andar em celulas não visitadas
+    for i in range(4):
+        dx, dy = moves[(w.sentido + 3 + i) % 4]
+        nx, ny = x + dx, y + dy
+        if (nx, ny) in lab_map and not lab_map[(nx, ny)].HB and (nx, ny) not in w.PassedCords:
+            w.Move(nx, ny)
+            w.sentido = (w.sentido + 3 + i) % 4
+            w.AddCord(nx, ny)
+            return
+
+    # 2) se não tiver novos caminhos, anda em celulas já visitadas
+    for i in range(4):
+        dx, dy = moves[(w.sentido + 3 + i) % 4]
+        nx, ny = x + dx, y + dy
+        if (nx, ny) in lab_map and not lab_map[(nx, ny)].HB:
+            w.Move(nx, ny)
+            w.sentido = (w.sentido + 3 + i) % 4
+            w.AddCord(nx, ny)
+            return
 
 def VerificarCaminho(x,y,ToVisit,lab_map2,w):
     c = 0
@@ -162,7 +190,7 @@ def main():
 
         pygame.init()
         tamanho = menu(screen)
-        tm = 0.000001
+        tm = 0.0000000001
         m  = n = tamanho
         x = 0
         y = 0
@@ -186,11 +214,11 @@ def main():
             b = WalkBreadthSearch(w2,lab_map2,ToVisit,m,n)
             if( a == 0 and b == 0):
                 sleep(1)
-                running = False
+                running = False                
             screen.fill(WHITE)
-            PrintLab(objs, w, objs2, w2, screen)
+            PrintLab(objs, w, objs2, w2, screen,a,b)
             pygame.display.flip()
-            sleep(tm)
+            #sleep(tm)
     
 main()
 pygame.quit()

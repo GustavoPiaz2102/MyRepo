@@ -24,11 +24,9 @@ YELLOW = "\033[33m"
 import random
 
 def GenLab(m, n):
-    # força dimensões ímpares
     if m % 2 == 0: m -= 1
     if n % 2 == 0: n -= 1
 
-    # cria grid inicial cheio de paredes
     grid = [[obj(x, y, True) for y in range(n)] for x in range(m)]
 
     direcoes = [(0, 2), (0, -2), (2, 0), (-2, 0)]
@@ -36,7 +34,6 @@ def GenLab(m, n):
     def dentro(x, y):
         return 0 <= x < m and 0 <= y < n
 
-    # DFS para escavar caminhos
     def dfs(x, y):
         grid[x][y].HB = False
         random.shuffle(direcoes)
@@ -48,24 +45,19 @@ def GenLab(m, n):
 
     dfs(0, 0)
 
-    # entrada e saída livres
     grid[0][0].HB = False
     grid[m-1][n-1].HB = False
 
-    # adiciona as bordas como objetos
     objs = []
 
-    # parede de cima e baixo
     for x in range(-1, m+1):
         objs.append(obj(x, -1, True))  # topo
         objs.append(obj(x, n, True))   # fundo
 
-    # parede lateral
     for y in range(n):
         objs.append(obj(-1, y, True))  # esquerda
         objs.append(obj(m, y, True))   # direita
 
-    # adiciona o grid interno
     for x in range(m):
         for y in range(n):
             objs.append(grid[x][y])
@@ -86,7 +78,7 @@ clock = pygame.time.Clock()
 CELL_SIZE = 20  # tamanho de cada célula (em pixels)
 
 
-def PrintLab(objs1, w1, objs2, w2, screen):
+def PrintLab(objs1, w1, objs2, w2, screen,a=1,b=1):
     def draw_lab(objs, w, offset_x):
         wx, wy = w.CordX, w.CordY
         max_x = max(o.CordX for o in objs)
@@ -121,11 +113,74 @@ def PrintLab(objs1, w1, objs2, w2, screen):
                         pygame.draw.rect(screen, WHITE, rect)  # espaço livre
                 else:
                     pygame.draw.rect(screen, BLACK, rect)      # fora do grid = parede
+    def ShowPassedCoords(screen, walker1, walker2):
+        font = pygame.font.SysFont(None, 28)
+        title_font = pygame.font.SysFont(None, 36, bold=True)
+        scroll_y = 0
+        running = True
+        clock = pygame.time.Clock()
+
+        # Botão voltar
+        btn_back = pygame.Rect(screen.get_width() - 200, 10, 180, 50)
+
+        while running:
+            for e in pygame.event.get():
+                if e.type == pygame.QUIT:
+                    pygame.quit(); exit()
+                if e.type == pygame.KEYDOWN:
+                    if e.key == pygame.K_ESCAPE:
+                        running = False
+                    if e.key == pygame.K_UP:
+                        scroll_y += 20
+                    if e.key == pygame.K_DOWN:
+                        scroll_y -= 20
+                if e.type == pygame.MOUSEBUTTONDOWN:
+                    if btn_back.collidepoint(e.pos):
+                        running = False
+
+            screen.fill((30, 30, 30))
+
+            # --- Texto de instrução ---
+            instr_txt = title_font.render("Use UP e DOWN para rolar. ESC ou botão para voltar ao menu.", True, (255,255,0))
+            screen.blit(instr_txt, (50, 10))
+
+            # --- Botão voltar ---
+            pygame.draw.rect(screen, (150, 0, 0), btn_back)
+            back_txt = font.render("Voltar ao Menu", True, (255,255,255))
+            screen.blit(back_txt, (btn_back.x + 15, btn_back.y + 15))
+
+            # --- Walker 1 ---
+            x_offset = 50
+            y_offset = 80 + scroll_y
+            txt1 = font.render("Walker 1 - Caminho Percorrido:", True, (0,200,0))
+            screen.blit(txt1, (x_offset, 50 + scroll_y))
+            for i, (x, y) in enumerate(walker1.PassedCords):
+                coord_txt = font.render(f"{i}: ({x}, {y})", True, (200,200,200))
+                screen.blit(coord_txt, (x_offset, y_offset))
+                y_offset += 25
+
+            # --- Walker 2 ---
+            x_offset = 400
+            y_offset = 80 + scroll_y
+            txt2 = font.render("Walker 2 - Caminho Percorrido:", True, (200,0,0))
+            screen.blit(txt2, (x_offset, 50 + scroll_y))
+            for i, (x, y) in enumerate(walker2.PassedCords):
+                coord_txt = font.render(f"{i}: ({x}, {y})", True, (200,200,200))
+                screen.blit(coord_txt, (x_offset, y_offset))
+                y_offset += 25
+
+            pygame.display.flip()
+            clock.tick(60)
+
 
     # --- Desenha os dois lado a lado ---
-    draw_lab(objs1, w1, offset_x=0)
-    largura1 = (max(o.CordX for o in objs1) + 1) * CELL_SIZE
-    draw_lab(objs2, w2, offset_x=largura1 + 50)  # 50px de margem
+    if a != 0 or b != 0:
+        draw_lab(objs1, w1, offset_x=0)
+        largura1 = (max(o.CordX for o in objs1) + 1) * CELL_SIZE
+        draw_lab(objs2, w2, offset_x=largura1 + 50)  # 50px de margem
+    else:
+        ShowPassedCoords(screen, w1, w2)
+
 
     pygame.display.flip()
     clock.tick(120)

@@ -27,7 +27,7 @@ SOMA(Entradas*Pesos) + Bias -> Função de Ativação -> Saída
 
 //==========================STRUCTURES========================//
 
-void train(float *weights, float *bias);
+void train(float *weights, float *bias, FILE *arq);
 int test(float *weights, float *bias);
 int activation(float val);
 

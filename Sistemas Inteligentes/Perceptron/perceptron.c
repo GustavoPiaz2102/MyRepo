@@ -8,20 +8,24 @@ int activation(float val)
     else
         return 0;
 }
-void train(float *weights, float *bias)
+void train(float *weights, float *bias, FILE *arq)
+// Podia colocar o bias em Weights[0]
 {
+
     int Inputs[4][2] = {{0, 0}, {0, 1}, {1, 0}, {1, 1}};
     int Outs[4] = {0, 0, 0, 1};
     float erro = 0.0, ErroTotal = 0.0;
     float soma;
     for (int epochs = 0; epochs < Epochs; epochs++)
     {
+        // salvar weights e bias em arquivo
+        fprintf(arq, "Epoch %d: Weights: [%f, %f], Bias: %f\n", epochs + 1, weights[0], weights[1], *bias);
         soma = 0.0;
         ErroTotal = 0.0;
         erro = 0.0;
         for (int i = 0; i < 4; i++)
         {
-
+            soma = 0.0;
             for (int j = 0; j < 2; j++)
             {
                 soma += Inputs[i][j] * weights[j];
@@ -56,6 +60,7 @@ int test(float *weights, float *bias)
 
 int main()
 {
+    FILE *arq = fopen("data.txt", "w");
     float *weights = (float *)malloc(2 * sizeof(float));
     float bias = 0.0;
     srand(time(NULL));
@@ -63,7 +68,10 @@ int main()
     {
         weights[i] = (float)rand() / (float)(RAND_MAX);
     }
-    train(weights, &bias);
+    train(weights, &bias, arq);
+
+    fclose(arq);
+
     int output = test(weights, &bias);
     printf("Output: %d\n", output);
     free(weights);

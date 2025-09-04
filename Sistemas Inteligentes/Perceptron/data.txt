@@ -1,0 +1,5 @@
+Epoch 1: Weights: [0.991814, 0.381410], Bias: 0.000000
+Epoch 2: Weights: [0.891814, 0.281410], Bias: -0.300000
+Epoch 3: Weights: [0.791814, 0.281410], Bias: -0.400000
+Epoch 4: Weights: [0.691814, 0.281410], Bias: -0.500000
+Epoch 5: Weights: [0.591814, 0.281410], Bias: -0.600000

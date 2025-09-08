@@ -19,16 +19,16 @@ SOMA(Entradas*Pesos) + Bias -> Função de Ativação -> Saída
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
-
+#include <math.h>
 //==========================DEFINES===========================//
 
 #define Epochs 1000
-#define LeaningRate 0.1
+#define LeaningRate 0.0001f
 
 //==========================STRUCTURES========================//
 
-void train(float *weights, float *bias, FILE *arq);
-int test(float *weights, float *bias);
+void train(float *weights, float *bias, FILE *arq, float** data,int NumExemples);
+int test(float *weights, float *bias, float** data,int NumExemples);
 int activation(float val);
 
 #endif

@@ -1,0 +1,3 @@
+/home/gustavo/git/MyRepo/RPG/build/CMakeFiles/MyGame.dir
+/home/gustavo/git/MyRepo/RPG/build/CMakeFiles/edit_cache.dir
+/home/gustavo/git/MyRepo/RPG/build/CMakeFiles/rebuild_cache.dir

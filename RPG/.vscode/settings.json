@@ -1,7 +1,6 @@
 {
     "files.associations": {
-        "perceptron.h": "c",
         "iostream": "cpp",
-        "string": "cpp"
+        "new": "cpp"
     }
 }

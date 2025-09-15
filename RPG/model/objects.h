@@ -22,6 +22,8 @@ class player : public object {
         int direction;  // 0: up, 1: right, 2: down, 3: left
     public:
         player(int x=0, int y=0, bool visible=true, bool HitBox=true, float life=100.0f, float damage=10.0f, int level=1, float exp=0.0f, float expToNextLevel=100.0f, float speed=1.0f, float money=0.0f, float armor=0.0f, float mana=100.0f, int direction=2,std::string name="player");
+        int x;
+        int y;
         void setLife(float life);
         void setDamage(float damage);
         void setLevel(int level);
@@ -44,15 +46,9 @@ class player : public object {
         int getDirection() const;
         void gainExp(float amount);
         void levelUp();
-        void move(int deltaX, int deltaY) override;
+        void move(int deltaX, int deltaY);
 };
-
-//==========================================================================================
-
-class wall : public object {
-    public:
-        wall(int x=0, int y=0, bool visible=false, bool HitBox=false, std::string name="wall");
-};
+//END PLAYER CLASS
 
 //==========================================================================================
 
@@ -60,16 +56,14 @@ class randomChest : public object {
 private:
     bool opened;
     int rarity;
-    std::vector<double> pesos = {1.0/2048, 1.0/512, 1.0/128, 1.0/32 , 1.0/8, 1.0/2, 1.0};
-
 public:
-    randomChest(int x=0, int y=0, bool visible=true, bool HitBox=true, bool opened=false); // removi rarity
+    randomChest(bool visible=true, bool HitBox=true, bool opened=false); // removi rarity
+    int randomRarity(); // 0: common, 1: uncommon, 2: rare, 3: epic, 4: legendary, 5: mythical
     void setOpened(bool opened);
     void setRarity(int rarity);
     bool isOpened() const;
     int getRarity() const;
     void openChest();
-    int randomRarity();
 };
 
 //==========================================================================================

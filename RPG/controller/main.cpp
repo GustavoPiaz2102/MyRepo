@@ -3,37 +3,46 @@
 #include "../model/objects.h"
 #include <vector>
 
-int main() {
-    const int size = 160;
-    const int pixelSize = 4;
+#define WallPath "../textures/Wall.png"
+#define GrassPath "../textures/Grass.png"
+#define PixelPath "../textures/Pixel.png"
 
+int main() {
+    const int size = 50;
+    const int pixelSize = 16;
+    const int width = size;
+    const int heigth = (int)(size/1.7);
     // Inicializa interface
-    Interface ui(size, size, pixelSize);
-    ui.loadTextures();
+    Interface ui(width,heigth , pixelSize);
 
     // Cria frameBuffer
     std::vector<std::vector<object*>> frameBuffer(
         size, std::vector<object*>(size, nullptr)
     );
+    object* grass = new object(true, true, "grass", GrassPath);
+    object* pixel = new object(false, false, "pixel", PixelPath);
+    object* wall = new object(true, true, "wall", WallPath);
+    randomChest* chest = new randomChest(true, true, false);
 
-    // Preenche frameBuffer
-    for(int i = 0; i < size; ++i){
-        for(int j = 0; j < size; ++j){
-            if(i == size-2 && j == 1)
-                frameBuffer[i][j] = new player(i, j, true, true, 100.0f, 10.0f, 1, 0.0f, 100.0f, 1.0f, 0.0f, 5.0f, 0);
-            else if(i == 0 || i == size-1)
-                frameBuffer[i][j] = new wall(i, j, true, true, "wall");
-            else
-                frameBuffer[i][j] = new object(i, j, true, false, "pixel");
+    for(int i = 0; i < heigth; ++i) {
+        for(int j = 0; j < width; ++j) {
+            if(i == 0) {
+                frameBuffer[i][j] = wall;
+            } else if(i == heigth-1) {
+                frameBuffer[i][j] = grass;
+            } else if(i == heigth - 2 && j == width-2) {
+                frameBuffer[i][j] = chest;
+            } else {
+                frameBuffer[i][j] = pixel;
+            }
         }
     }
+    
 
     // Loop principal
     while(ui.isOpen()) {
         ui.render(frameBuffer);
     }
-
-    // Limpa memória
     for(int i = 0; i < size; ++i)
         for(int j = 0; j < size; ++j)
             delete frameBuffer[i][j];

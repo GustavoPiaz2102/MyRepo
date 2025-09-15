@@ -9,21 +9,6 @@ Interface::~Interface() {
     window.close();
 }
 
-bool Interface::loadTextures() {
-    if(!wallTexture.loadFromFile(wallFile)) {
-        std::cerr << "Erro ao carregar wall texture\n";
-        return false;
-    }
-    if(!pixelTexture.loadFromFile(pixelFile)) {
-        std::cerr << "Erro ao carregar pixel texture\n";
-        return false;
-    }
-    if(!playerTexture.loadFromFile(playerFile)) {
-        std::cerr << "Erro ao carregar player texture\n";
-        return false;
-    }
-    return true;
-}
 
 void Interface::render(const std::vector<std::vector<object*>>& frameBuffer) {
     sf::Event event;
@@ -38,15 +23,12 @@ void Interface::render(const std::vector<std::vector<object*>>& frameBuffer) {
         for(int j = 0; j < width; ++j) {
             if(frameBuffer[i][j] && frameBuffer[i][j]->isVisible()) {
                 sf::Sprite sprite;
-                std::string name = frameBuffer[i][j]->getName();
-                if(name == "wall")
-                    sprite.setTexture(wallTexture);
-                else if(name == "player")
-                    sprite.setTexture(playerTexture);
-                else
-                    sprite.setTexture(pixelTexture);
-
+                sprite.setTexture(frameBuffer[i][j]->getTexture());
                 sprite.setPosition(j * pixelSize, i * pixelSize);
+                sprite.setScale(
+                    static_cast<float>(pixelSize) / sprite.getTexture()->getSize().x,
+                    static_cast<float>(pixelSize) / sprite.getTexture()->getSize().y
+                );
                 window.draw(sprite);
             }
         }

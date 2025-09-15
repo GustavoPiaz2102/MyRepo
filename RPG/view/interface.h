@@ -4,17 +4,11 @@
 #include <vector>
 #include <string>
 // Textures
-#define wallFile "../textures/wall.png"
-#define pixelFile "../textures/air.png"
-#define playerFile "../textures/air.png"
-
 class Interface {
 public:
     Interface(int width, int height, int pixelSize);
     ~Interface();
 
-    // Carrega as texturas (chamar antes do loop principal)
-    bool loadTextures();
 
     // Loop de exibição (desenha o framebuffer na tela)
     void render(const std::vector<std::vector<object*>>& frameBuffer);
@@ -30,9 +24,4 @@ private:
     int width;
     int height;
     int pixelSize;
-
-    // Texturas
-    sf::Texture wallTexture;
-    sf::Texture pixelTexture;
-    sf::Texture playerTexture;
 };

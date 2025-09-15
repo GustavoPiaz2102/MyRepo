@@ -2,34 +2,26 @@
 #define LOWSCALE_H
 #include <iostream>
 #include <string>
-
+#include <vector>
+#include <SFML/Graphics.hpp>
 //==========================================================================================
 
 class object{
     private:
-        int x;
-        int y;
         bool visible;
         bool HitBox;
         std::string name;
-        int sizex = 1;
-        int sizey = 1;
         int id;
+        sf::Texture texture;
+
     public:
-        object(int x=0, int y=0, bool visible=true, bool HitBox=true, std::string name="object");
-        void setX(int x);
-        void setY(int y);
-        void setSizeX(int sizex);
-        void setSizeY(int sizey);
-        int getSizeX() const;
-        int getSizeY() const;
+        object(bool visible=true, bool HitBox=true, std::string name="object", std::string TexturePath="../textures/Pixel.png");
+        void setTexture(std::string TexturePath);
+        sf::Texture& getTexture();
         void setVisible(bool visible);
         void setHitBox(bool HitBox);
-        int getX() const;
-        int getY() const;
         bool isVisible() const;
         bool hasHitBox() const;
-        virtual void move(int deltaX, int deltaY);  
         std::string getName();
         void setName(const std::string& name);
 

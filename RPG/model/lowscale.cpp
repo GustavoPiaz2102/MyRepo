@@ -2,27 +2,24 @@
 
 //==========================================================================================
 
+
 //OBJECT CLASS
 
-object::object(int x, int y, bool visible, bool HitBox, std::string name)
-    : x(x), y(y), visible(visible), HitBox(HitBox), name(name) {}
-void object::setX(int x) {
-    this->x = x;
+//==========================================================================================
+
+object::object(bool visible, bool HitBox, std::string name,std::string TexturePath)
+    : visible(visible), HitBox(HitBox), name(name) {
+    setTexture(TexturePath);
+    }
+
+//carrega a textura
+void object::setTexture(std::string TexturePath) {
+    if(!texture.loadFromFile(TexturePath)) {
+        std::cerr << "Erro ao carregar textura de " << name << " de " << TexturePath << "\n";
+    }
 }
-void object::setY(int y) {
-    this->y = y;
-}
-void object::setSizeX(int sizex) {
-    this->sizex = sizex;
-}
-void object::setSizeY(int sizey) {
-    this->sizey = sizey;
-}
-int object::getSizeX() const {
-    return sizex;
-}
-int object::getSizeY() const {
-    return sizey;   
+sf::Texture& object::getTexture() {
+    return texture;
 }
 void object::setVisible(bool visible) {
     this->visible = visible;
@@ -30,22 +27,14 @@ void object::setVisible(bool visible) {
 void object::setHitBox(bool HitBox) {
     this->HitBox = HitBox;
 }
-int object::getX() const {
-    return x;
-}
-int object::getY() const {
-    return y;
-}
+
 bool object::isVisible() const {
     return visible;
 }
 bool object::hasHitBox() const {
     return HitBox;
 }
-void object::move(int deltaX, int deltaY) {
-    x += deltaX;
-    y += deltaY;
-}
+
 std::string object::getName() {
     return name;
 }

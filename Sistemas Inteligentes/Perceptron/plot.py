@@ -181,12 +181,18 @@ def plot_test_results(ax, test_data):
     ax.legend()
     plt.draw()
 
-if __name__ == "__main__":
-    # Executa os programas
+def RunCPPLinear():
+    "LINEAR"    
     os.system("cd datasets && python3 GenData.py && cd ..")  
-    os.system("./prog")
+    os.system("./PerceptronLinear")
 
-    # Lê dados de treinamento
+def RunCPPNonLinear():
+    "LINEAR"    
+    os.system("cd datasets && python3 GenData.py && cd ..")  
+    os.system("./PerceptronNonLinear")
+
+if __name__ == "__main__":
+    RunCPPLinear()
     epochs = parse_file("data.txt")
     points, labels = read_points("datasets/linear.csv")
     
@@ -198,17 +204,18 @@ if __name__ == "__main__":
         test_data = parse_test_results("TestResults.txt")
         if test_data:
             plot_test_results(ax, test_data)
-        else:
-            print("Gerando dados de teste...")
-            # Se não encontrar TestResults.txt, plota dados de validação
-            val_points, val_labels = read_points("datasets/nonlinear.csv")
-            if val_points:
-                for (x, y), label in zip(val_points, val_labels):
-                    ax.scatter(x, y, c='purple', s=120, marker='s', 
-                             edgecolors='black', alpha=0.6, label='Validação')
-                ax.legend()
-                ax.set_title("Linha Final com Dados de Validação")
-        
         plt.show()
-    else:
-        print("Dados insuficientes para animação!")
+
+    RunCPPNonLinear()
+    epochs = parse_file("data.txt")
+    points, labels = read_points("datasets/nonlinear.csv")
+    
+    # Animação do treinamento
+    if epochs and points:
+        fig, ax = plot_animation(epochs, points, labels)
+        
+        # Lê e plota resultados do teste
+        test_data = parse_test_results("TestResults.txt")
+        if test_data:
+            plot_test_results(ax, test_data)
+        plt.show()

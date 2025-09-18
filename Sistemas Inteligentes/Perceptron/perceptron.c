@@ -10,12 +10,14 @@ int activation(float val)
 }
 void train(float *weights, float *bias, FILE *arq, float **data, int NumExemples)
 {
+    float menorErro = 10000;
+    int EpochComMenorErro = 0;
     float erro, ErroTotal;
     float soma;
 
     for (int epochs = 0; epochs < Epochs; epochs++)
     {
-        printf("Epoch %d\n", epochs + 1);
+        printf("Epoch %d ", epochs + 1);
         fprintf(arq, "Epoch %d: Weights: [%f, %f], Bias: %f\n",
                 epochs + 1, weights[0], weights[1], *bias);
 
@@ -36,11 +38,16 @@ void train(float *weights, float *bias, FILE *arq, float **data, int NumExemples
                 *bias += LeaningRate * erro;
             }
         }
-
+        printf("Erro: %f\n",ErroTotal);
+        if(ErroTotal<menorErro){
+            menorErro = ErroTotal;
+            EpochComMenorErro = epochs;
+        }
         if (ErroTotal == 0)
             break;
 
     }
+    printf("Melhor Epoch: %d\nMenor Erro: %f\n",EpochComMenorErro,menorErro);
 }
 int test(float *weights, float *bias, float **data, int NumExemples)
 {
@@ -56,7 +63,7 @@ int test(float *weights, float *bias, float **data, int NumExemples)
 int main()
 {
     FILE *ArquivoSave = fopen("data.txt", "w");
-    FILE *ArqLeitura = fopen("datasets/linear.csv", "r");
+    FILE *ArqLeitura = fopen("datasets/nonlinear.csv", "r");
     if (ArquivoSave == NULL || ArqLeitura == NULL)
     {
         printf("erro na abertura dos arquivos\n");

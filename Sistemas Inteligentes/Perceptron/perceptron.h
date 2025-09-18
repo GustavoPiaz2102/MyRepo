@@ -22,7 +22,7 @@ SOMA(Entradas*Pesos) + Bias -> Função de Ativação -> Saída
 #include <math.h>
 //==========================DEFINES===========================//
 
-#define Epochs 1000
+#define Epochs 200
 #define LeaningRate 0.0001f
 
 //==========================STRUCTURES========================//

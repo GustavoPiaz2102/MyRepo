@@ -3,13 +3,8 @@
 Nome: Gustavo Piaz Da Silva
 Matrícula: 23200958
 
-Implementação de um Perceptron AND
 
-
-
-Funcionamento
-
-SOMA(Entradas*Pesos) + Bias -> Função de Ativação -> Saída
+Perceptron com uma Camada
 
 */
 

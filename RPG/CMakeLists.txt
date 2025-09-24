@@ -4,7 +4,7 @@ project(MyGame LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-# Incluir diretórios de headers
+# Incluir diretórios de headers (se realmente precisar)
 include_directories(
     ${PROJECT_SOURCE_DIR}/model
     ${PROJECT_SOURCE_DIR}/view
@@ -22,9 +22,14 @@ add_executable(MyGame
     ${VIEW_SOURCES}
 )
 
-# --- SFML ---
-# Procura a SFML instalada no sistema
-find_package(SFML 2.5 COMPONENTS graphics window system REQUIRED)
+# Procura pelo SFML com todos os módulos que você usa
+find_package(SFML 3 REQUIRED COMPONENTS Graphics Window System Audio Network)
 
-# Linka SFML com o executável
-target_link_libraries(MyGame PRIVATE sfml-graphics sfml-window sfml-system)
+# Linka contra as libs do SFML
+target_link_libraries(MyGame PRIVATE
+    sfml-graphics
+    sfml-window
+    sfml-system
+    sfml-audio
+    sfml-network
+)

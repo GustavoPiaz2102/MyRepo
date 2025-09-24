@@ -14,10 +14,10 @@ void train(float *weights, float *bias, FILE *arq, float **data, int NumExemples
     int EpochComMenorErro = 0;
     float erro, ErroTotal;
     float soma;
-
+    float ErroAnterior=100000.0,WeigthAnterior[2],biasAnt;
     for (int epochs = 0; epochs < Epochs; epochs++)
     {
-        printf("Epoch %d ", epochs + 1);
+        //printf("Epoch %d ", epochs + 1);
         fprintf(arq, "Epoch %d: Weights: [%f, %f], Bias: %f\n",
                 epochs + 1, weights[0], weights[1], *bias);
 
@@ -39,14 +39,33 @@ void train(float *weights, float *bias, FILE *arq, float **data, int NumExemples
             }
         }
         printf("Erro: %f\n",ErroTotal);
+        //Revisar condicional
         if(ErroTotal<menorErro){
             menorErro = ErroTotal;
             EpochComMenorErro = epochs;
         }
-        if (ErroTotal == 0)
+        if (ErroTotal == 0){
+            ErroAnterior = ErroTotal;
+            WeigthAnterior[0] = weights[0];
+            WeigthAnterior[1] = weights[1];
+            biasAnt = *bias;
             break;
-
+        }
+        else{if(ErroTotal>ErroAnterior)
+            break;
+        
+        else{
+            ErroAnterior = ErroTotal;
+            WeigthAnterior[0] = weights[0];
+            WeigthAnterior[1] = weights[1];
+            biasAnt = *bias;
+        }
     }
+    }
+    weights[0] = WeigthAnterior[0];
+    weights[1] = WeigthAnterior[1];
+    *bias = biasAnt;
+    
     printf("Melhor Epoch: %d\nMenor Erro: %f\n",EpochComMenorErro,menorErro);
 }
 int test(float *weights, float *bias, float **data, int NumExemples)
@@ -63,7 +82,7 @@ int test(float *weights, float *bias, float **data, int NumExemples)
 int main()
 {
     FILE *ArquivoSave = fopen("data.txt", "w");
-    FILE *ArqLeitura = fopen("datasets/nonlinear.csv", "r");
+    FILE *ArqLeitura = fopen("datasets/linear.csv", "r");
     if (ArquivoSave == NULL || ArqLeitura == NULL)
     {
         printf("erro na abertura dos arquivos\n");

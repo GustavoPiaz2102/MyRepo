@@ -1,4 +1,5 @@
 file(REMOVE_RECURSE
+  "CMakeFiles/MyGame.dir/link.d"
   "CMakeFiles/MyGame.dir/controller/main.cpp.o"
   "CMakeFiles/MyGame.dir/controller/main.cpp.o.d"
   "CMakeFiles/MyGame.dir/model/itens.cpp.o"

@@ -6,7 +6,6 @@ import time
 import os
 
 def parse_file(filename):
-    """Lê o arquivo data.txt com pesos e bias por epoch."""
     epochs = []
     with open(filename, "r") as f:
         for line in f:
@@ -27,7 +26,6 @@ def parse_file(filename):
     return epochs
 
 def read_points(filename):
-    """Lê o CSV e retorna os pontos (x, y) e labels (0 ou 1)."""
     points = []
     labels = []
     try:
@@ -45,7 +43,6 @@ def read_points(filename):
     return points, labels
 
 def parse_test_results(filename):
-    """Lê o arquivo TestResults.txt e retorna os dados de teste."""
     test_data = []
     try:
         with open(filename, 'r') as f:
@@ -71,7 +68,6 @@ def plot_animation(epochs, points, labels):
     plt.ion()
     fig, ax = plt.subplots(figsize=(10, 8))
 
-    # Limites do gráfico
     if points:
         x_min, x_max = min(p[0] for p in points) - 1, max(p[0] for p in points) + 1
         y_min, y_max = min(p[1] for p in points) - 1, max(p[1] for p in points) + 1
@@ -85,15 +81,11 @@ def plot_animation(epochs, points, labels):
     ax.set_ylabel('Y')
     ax.grid(True, linestyle='--', alpha=0.7)
 
-    # Plotar os pontos de treino
     for (x, y), label in zip(points, labels):
-        ax.scatter(x, y, c="blue" if label == 1 else "red", s=100, 
-                  edgecolors="k", alpha=0.7)
+        ax.scatter(x, y, c="blue" if label == 1 else "red", s=100, edgecolors="k", alpha=0.7)
 
-    # Linha de decisão
     line, = ax.plot([], [], 'g-', linewidth=3)
     
-    # Animação das epochs
     for i, (epoch, w1, w2, b) in enumerate(epochs):
         if abs(w2) > 1e-6:
             x_vals = [x_min, x_max]
@@ -111,7 +103,6 @@ def plot_animation(epochs, points, labels):
     
     plt.ioff()
     
-    # Limpa os pontos de treino e mantém apenas a reta final
     ax.clear()
     ax.set_xlim(x_min, x_max)
     ax.set_ylim(y_min, y_max)
@@ -119,7 +110,6 @@ def plot_animation(epochs, points, labels):
     ax.set_ylabel('Y')
     ax.grid(True, linestyle='--', alpha=0.7)
     
-    # Plota apenas a linha de decisão final
     w1_final, w2_final, b_final = epochs[-1][1], epochs[-1][2], epochs[-1][3]
     if abs(w2_final) > 1e-6:
         x_vals = [x_min, x_max]
@@ -132,17 +122,15 @@ def plot_animation(epochs, points, labels):
     ax.set_title("Linha de Decisão Final (Após Treinamento)")
     ax.legend()
     plt.draw()
-    plt.pause(1.0)  # Pausa para mostrar a linha limpa
+    plt.pause(1.0)
     
     return fig, ax
 
 def plot_test_results(ax, test_data):
-    """Plota os resultados do teste sobre o gráfico existente."""
     if not test_data:
         print("Nenhum dado de teste encontrado!")
         return
     
-    # Plota pontos de teste
     correct_x = []
     correct_y = []
     incorrect_x = []
@@ -156,38 +144,27 @@ def plot_test_results(ax, test_data):
             incorrect_x.append(x)
             incorrect_y.append(y)
     
-    # Pontos corretos em verde
     if correct_x:
-        ax.scatter(correct_x, correct_y, c='green', s=150, marker='o', 
-                  edgecolors='black', linewidth=2, label='Teste: Correto', alpha=0.8)
+        ax.scatter(correct_x, correct_y, c='green', s=150, marker='o', edgecolors='black', linewidth=2, label='Teste: Correto', alpha=0.8)
     
-    # Pontos incorretos em laranja
     if incorrect_x:
-        ax.scatter(incorrect_x, incorrect_y, c='blue', s=150, marker='x', 
-                  linewidth=3, label='Teste: Incorreto', alpha=0.8)
+        ax.scatter(incorrect_x, incorrect_y, c='blue', s=150, marker='x', linewidth=3, label='Teste: Incorreto', alpha=0.8)
     
-    # Adiciona anotações para pontos incorretos
     for x, y, expected, predicted in test_data:
         if expected != predicted:
-            ax.annotate(f'E:{expected} P:{predicted}', (x, y), 
-                       xytext=(5, 5), textcoords='offset points',
-                       fontsize=8, color='red')
+            ax.annotate(f'E:{expected} P:{predicted}', (x, y), xytext=(5, 5), textcoords='offset points', fontsize=8, color='red')
     
-    # Calcula acurácia
     accuracy = len(correct_x) / len(test_data) * 100
-    ax.set_title(f"Resultados do Teste - Acurácia: {accuracy:.1f}%\n"
-                f"Verde: Correto ({len(correct_x)}), Laranja: Incorreto ({len(incorrect_x)})")
+    ax.set_title(f"Resultados do Teste - Acurácia: {accuracy:.1f}%\nVerde: Correto ({len(correct_x)}), Laranja: Incorreto ({len(incorrect_x)})")
     
     ax.legend()
     plt.draw()
 
 def RunCPPLinear():
-    "LINEAR"    
     os.system("cd datasets && python3 GenData.py && cd ..")  
     os.system("./PerceptronLinear")
 
 def RunCPPNonLinear():
-    "LINEAR"    
     os.system("cd datasets && python3 GenData.py && cd ..")  
     os.system("./PerceptronNonLinear")
 
@@ -196,11 +173,8 @@ if __name__ == "__main__":
     epochs = parse_file("data.txt")
     points, labels = read_points("datasets/linear.csv")
     
-    # Animação do treinamento
     if epochs and points:
         fig, ax = plot_animation(epochs, points, labels)
-        
-        # Lê e plota resultados do teste
         test_data = parse_test_results("TestResults.txt")
         if test_data:
             plot_test_results(ax, test_data)
@@ -210,11 +184,8 @@ if __name__ == "__main__":
     epochs = parse_file("data.txt")
     points, labels = read_points("datasets/nonlinear.csv")
     
-    # Animação do treinamento
     if epochs and points:
         fig, ax = plot_animation(epochs, points, labels)
-        
-        # Lê e plota resultados do teste
         test_data = parse_test_results("TestResults.txt")
         if test_data:
             plot_test_results(ax, test_data)

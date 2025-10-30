@@ -160,13 +160,24 @@ def plot_test_results(ax, test_data):
     ax.legend()
     plt.draw()
 
+
+"""
+
+EXECUÇÃO DOS PERCEPTRONS
+
+"""
+
 def RunCPPLinear():
     os.system("cd datasets && python3 GenData.py && cd ..")  
     os.system("./PerceptronLinear")
 
+
+
 def RunCPPNonLinear():
     os.system("cd datasets && python3 GenData.py && cd ..")  
     os.system("./PerceptronNonLinear")
+
+
 
 if __name__ == "__main__":
     RunCPPLinear()

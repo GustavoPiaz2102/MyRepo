@@ -1,13 +1,13 @@
 /*
 
-Nome: Gustavo Piaz Da Silva
-Matrícula: 23200958
+    PERCEPTRON SINGLE LAYER EM C
+    
+    Nome: Gustavo Piaz Da Silva
+    Matrícula: 23200958
 
-
-Perceptron com uma Camada
 
 */
-
+ 
 //==========================INCLUDES==========================//
 #ifndef PERCEPTRON_H
 #define PERCEPTRON_H

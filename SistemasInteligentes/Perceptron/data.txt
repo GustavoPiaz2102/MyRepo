@@ -1,0 +1,12 @@
+Epoch 1: Weights: [0.030133, -0.033539], Bias: 0.000000
+Epoch 2: Weights: [0.032153, -0.028774], Bias: 0.002300
+Epoch 3: Weights: [0.032724, -0.025639], Bias: 0.003800
+Epoch 4: Weights: [0.032541, -0.023483], Bias: 0.005000
+Epoch 5: Weights: [0.032229, -0.021541], Bias: 0.006100
+Epoch 6: Weights: [0.031774, -0.019882], Bias: 0.007000
+Epoch 7: Weights: [0.031320, -0.018223], Bias: 0.007900
+Epoch 8: Weights: [0.030735, -0.016877], Bias: 0.008600
+Epoch 9: Weights: [0.029975, -0.016088], Bias: 0.008800
+Epoch 10: Weights: [0.029063, -0.015626], Bias: 0.008900
+Epoch 11: Weights: [0.028151, -0.015164], Bias: 0.009000
+Epoch 12: Weights: [0.027239, -0.014702], Bias: 0.009100

@@ -1,6 +1,6 @@
 """
-Agente De envio de mensagem em localhost
 
+Agente De envio de mensagem em localhost
 Gustavo Piaz Da Silva - 23200958 
 
 """
@@ -14,6 +14,8 @@ IMPORTS
 from spade import agent, behaviour
 from spade.message import Message
 import asyncio
+
+#=============================================================
 
 class MyAgent(agent.Agent):
     async def setup(self):
@@ -42,6 +44,8 @@ class MyAgent(agent.Agent):
             msg = await self.receive(timeout=10)
             if msg:
                 print(f"Mensagem recebida: {msg.body}")
+
+#=============================================================
 
 if __name__ == "__main__":
 

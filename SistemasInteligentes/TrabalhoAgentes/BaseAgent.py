@@ -22,6 +22,7 @@ class MyAgent(agent.Agent):
         #print(f"Agente {self.jid} iniciado.")
         self.add_behaviour(self.SendBehaviour(period = 4))  
         self.add_behaviour(self.ReceiveBehaviour())
+        self.choose = True
 
     class SendBehaviour(behaviour.PeriodicBehaviour):
         async def run(self):
@@ -34,7 +35,11 @@ class MyAgent(agent.Agent):
                 await asyncio.sleep(0.05)
             """
             msg = Message(to="AgentePedro@localhost")
-            msg.body = input("Digite um Numero: ")
+            if self.agent.choose:
+                msg.body = input("Defina o intervalo de numeros min,max: ")
+                self.agent.choose = False
+            else:
+                msg.body = input("Digite um Numero: ")
             await self.send(msg)
             print(f"Enviado: {msg.body}")
 
@@ -44,6 +49,8 @@ class MyAgent(agent.Agent):
             msg = await self.receive(timeout=10)
             if msg:
                 print(f"Mensagem recebida: {msg.body}")
+                if msg.body == "correto":
+                    await self.agent.stop()
 
 #=============================================================
 

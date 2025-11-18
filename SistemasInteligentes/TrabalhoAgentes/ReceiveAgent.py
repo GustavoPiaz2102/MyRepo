@@ -15,21 +15,37 @@ from spade import agent, behaviour
 from spade.message import Message
 from os import system
 import asyncio
+from random import randint
 
 class MyAgent(agent.Agent):
     async def setup(self):
         self.number = 37
         self.msgToSend = ""
         self.msgRCV = ""
+        self.add_behaviour(self.DefineIntervalBehaviour())
         self.add_behaviour(self.ReceiveBehaviour())   
         self.add_behaviour(self.SendBehaviour(period=1))
-
     class ReceiveBehaviour(behaviour.CyclicBehaviour):
         async def run(self):
             msg = await self.receive(timeout=10)
             if msg:
                 self.agent.msgRCV = msg.body
                 print(f"Mensagem recebida: {msg.body}")
+
+    class DefineIntervalBehaviour(behaviour.OneShotBehaviour):
+        async def run(self):
+            running = True
+            while(running):
+                msg = await self.receive(timeout=10)
+                if msg:
+                    running = False
+            if msg:
+                interval = msg.body.split(",")
+                min = int(interval[0])
+                max = int(interval[1])
+                self.agent.number = randint(min, max)
+                print(f"Numero Escolhido no intervalo {min} a {max}: {self.agent.number}")
+                msg = ""
 
     class SendBehaviour(behaviour.PeriodicBehaviour):
         async def run(self):
@@ -46,7 +62,7 @@ class MyAgent(agent.Agent):
                     self.agent.msgToSend = "menor"
                 else:
                     self.agent.msgToSend = "correto"
-
+                    await self.agent.stop()
                 msg = Message(to="AgtGustavo@localhost")
                 msg.body = self.agent.msgToSend
                 await self.send(msg)
@@ -73,6 +89,7 @@ async def main():
     try:
         while True:
             await asyncio.sleep(0.1)
+
     except KeyboardInterrupt:
         print("Encerrando agente...")
         await agt.stop()

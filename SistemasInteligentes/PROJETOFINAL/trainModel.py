@@ -27,6 +27,8 @@ from sklearn.metrics import mean_squared_error, r2_score
 from sklearn.preprocessing import StandardScaler
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.pipeline import Pipeline
+import matplotlib.pyplot as plt
+
 from ReadDataSet import *
 from encoder import encode_categorical_features
 
@@ -56,7 +58,6 @@ X_train, X_test, y_train, y_test = train_test_split(
 def trainModel(n_estimators=500, max_depth=None, min_samples_split=2, min_samples_leaf=2,random_state=42):
     """
     Pipeline com normalização e random forest (Eu achei melhor usar rf do que regressão linear e o scaler por hora vai ficar o standart)
-   
     LEMBRAR DE TESTAR OUTRO SCALER SE O R² NÃO SUBIR DE 0.8
     
     """ 
@@ -72,29 +73,64 @@ def trainModel(n_estimators=500, max_depth=None, min_samples_split=2, min_sample
         ))
     ])
 
-    model.fit(X_train, y_train)
+    model.fit(X_train, y_train) 
     return model
+
+def plotYXY(y_real, y_pred, title="Real vs Predicted"):
+
+    plt.figure(figsize=(6, 6))
+    plt.scatter(y_real, y_pred, alpha=0.5)
+    plt.plot([y_real.min(), y_real.max()],
+             [y_real.min(), y_real.max()],
+             linestyle='--')
+    
+    plt.xlabel("Real")
+    plt.ylabel("Predito")
+    plt.title(title)
+    plt.grid(True)
+    plt.tight_layout()
+    plt.show()
+
 
 
 trained_model = trainModel()
+
+y_pred = trained_model.predict(X_test)
+
+y_predTrain = trained_model.predict(X_train)
+
 
 # ============================
 # AVALIAÇÃO
 # ============================
 
-y_pred = trained_model.predict(X_test)
+mse = mean_squared_error(y_train, y_predTrain)
+rmse = np.sqrt(mse) 
+r2 = r2_score(y_train, y_predTrain)
+
+print(f"RMSE Train: {rmse:.2f}")
+print(f"R²  Train: {r2:.4f}")
+
 
 mse = mean_squared_error(y_test, y_pred)
 rmse = np.sqrt(mse)
 r2 = r2_score(y_test, y_pred)
 
-print(f"RMSE: {rmse:.2f}")
-print(f"R²  : {r2:.4f}")
+print(f"RMSE Test: {rmse:.2f}")
+print(f"R²  Test: {r2:.4f}")
 
+#=================================================
 
+# ============================
+# PLOTAGEM
+# ============================
 
+plotYXY(y_test, y_pred)
+
+"""
 #IGNORA O ACC MAS EU QUERIA COLOCAR ELE AQUI
 accuracy = 100 - (rmse / y_test.mean()) * 100
 accuracy = max(0, accuracy)  
 print(f"Acc aproximada: {accuracy:.2f}%") 
 # sinceramente eu coloquei o acc por birra pq n serve d nada pra regressão mas enfim
+"""

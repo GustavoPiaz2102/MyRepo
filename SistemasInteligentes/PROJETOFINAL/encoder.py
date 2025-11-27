@@ -21,12 +21,9 @@ def encode_categorical_features(df): # vai retornar outro df só q codificado, e
     # ======================== COLUNAS NUMÉRICAS ==========================
 
 
-
     """
     Basicamente pra tirar os caracteres e converter pra numerico
     """
-
-
 
 
     numeric_cols = [

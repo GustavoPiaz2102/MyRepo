@@ -16,6 +16,7 @@ from spade.message import Message
 from os import system
 import asyncio
 from random import randint
+from spade.template import Template
 
 def ThinkNumber():
     val = randint(0,1000)
@@ -23,57 +24,57 @@ def ThinkNumber():
     intervalmax = randint(val, 1000)
     return val, str(intervalmin) , str(intervalmax)
 
-    
 
 class MyAgent(agent.Agent):
     async def setup(self):
+        templatesubscribe = Template(metadata={"performative": "subscribe"})
+        templaterequest = Template(metadata={"performative": "request"})
         self.number,self.intervalmin,self.intervalmax = ThinkNumber()
         self.msgToSend = ""
-        self.msgRCV = ""
-        self.add_behaviour(self.ReceiveBehaviour())   
-        self.add_behaviour(self.SendBehaviour(period=1))
+        self.performativeToSend = ""
+        self.add_behaviour(self.Receiverequest(),templaterequest)   
+        self.add_behaviour(self.Receivesubscribe(),templatesubscribe)   
+        self.add_behaviour(self.SendBehaviour())
 
-    class ReceiveBehaviour(behaviour.CyclicBehaviour):
+    class Receiverequest(behaviour.CyclicBehaviour):
         async def run(self):
             msg = await self.receive(timeout=10)
-            if msg:
-                self.agent.msgRCV = msg.body
-                print(f"Mensagem recebida: {msg.body}")
-
-    class SendBehaviour(behaviour.PeriodicBehaviour):
-
-        def TextToCommand(self):
-            if "[request]" in self.agent.msgRCV:
-                self.agent.msgToSend = f"[inform] O intervalor é ({self.agent.intervalmin},{self.agent.intervalmax})"
-            elif "[subscribe]" in self.agent.msgRCV: #Recebe no tipo [subscribe] int
-                ReceivedValue = int(self.agent.msgRCV.strip().split()[-1])
-
-                if ReceivedValue < self.agent.number:
-                    self.agent.msgToSend = "[failure] >"
-                elif ReceivedValue > self.agent.number:
-                    self.agent.msgToSend = "[failure] <"
-                elif ReceivedValue == self.agent.number:
-                    self.agent.msgToSend = f"[inform-done] {self.agent.number} Valor Correto"
-                else:
-                    self.agent.msgToSend = f"[error] linguagem não aceita"
-                    
-
-            
+            if not msg:
+                return
+            self.agent.msgToSend = f"O intervalo é ({self.agent.intervalmin},{self.agent.intervalmax})"
+            self.agent.performativeToSend = "inform"
+    
+    class Receivesubscribe(behaviour.CyclicBehaviour):
         async def run(self):
-            if not self.agent.msgRCV or self.agent.msgRCV == "":
-                return  
-            try:
-                self.TextToCommand()
-                msg = Message(to="AgtGustavo@localhost")
-                msg.body = self.agent.msgToSend
-                await self.send(msg)
-                print(f"Mensagem enviada: {msg.body}")
+            msg = await self.receive(timeout=10)
+            if not msg:
+                return
+            ReceivedValue = int(msg.body.split()[-1])
+            if ReceivedValue < self.agent.number:
+                self.agent.msgToSend = ">"
+                self.agent.performativeToSend = "failure"
+            elif ReceivedValue > self.agent.number:
+                self.agent.msgToSend = "<"
+                self.agent.performativeToSend = "failure"
+            elif ReceivedValue == self.agent.number:
+                self.agent.msgToSend = "Valor Correto"
+                self.agent.performativeToSend = "inform-done"
+
+               
+
+    class SendBehaviour(behaviour.CyclicBehaviour):
+        async def run(self):
+            if self.agent.msgToSend == "" or self.agent.performativeToSend == "":
+                return
+            msg = Message(to="AgtGustavo@localhost")
+            msg.body = self.agent.msgToSend
+            msg.set_metadata("performative",self.agent.performativeToSend)
+            await self.send(msg)
+            print(f"Mensagem enviada: {msg.body}")
+            
+            self.agent.performativeToSend = ""
+            self.agent.msgToSend = ""
                 
-                self.agent.msgRCV = ""
-                
-            except ValueError:
-                print(f"Erro: mensagem recebida não é um número válido: '{self.agent.msgRCV}'")
-                self.agent.msgRCV = ""  
 
 async def main():
     agt = MyAgent("AgentePedro@localhost", "senha123")

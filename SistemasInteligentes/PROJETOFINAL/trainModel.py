@@ -53,13 +53,13 @@ X_train, X_test, y_train, y_test = train_test_split(
 # TREINO DO MODELO 
 # ============================
 
-def trainModel(n_estimators=500, max_depth=None, min_samples_split=2, min_samples_leaf=1,random_state=42):
+def trainModel(n_estimators=500, max_depth=None, min_samples_split=2, min_samples_leaf=2,random_state=42):
     """
     Pipeline com normalização e random forest (Eu achei melhor usar rf do que regressão linear e o scaler por hora vai ficar o standart)
    
     LEMBRAR DE TESTAR OUTRO SCALER SE O R² NÃO SUBIR DE 0.8
     
-    """
+    """ 
     model = Pipeline([
         ("scaler", StandardScaler()),
         ("regressor", RandomForestRegressor(

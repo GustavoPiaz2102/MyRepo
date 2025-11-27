@@ -15,7 +15,7 @@ from spade import agent, behaviour
 from spade.message import Message
 import asyncio
 import os
-
+from time import sleep
 #=============================================================
 def ShowMenu():
     print("""
@@ -29,15 +29,16 @@ def ShowMenu():
 
 def ClearChat():
     os.system("clear")
+    
 
 class MyAgent(agent.Agent):
     async def setup(self):
         #print(f"Agente {self.jid} iniciado.")
         self.ChatHistory = []
-        self.add_behaviour(self.SendBehaviour(period = 4))  
+        self.add_behaviour(self.SendBehaviour())  
         self.add_behaviour(self.ReceiveBehaviour())
 
-    class SendBehaviour(behaviour.PeriodicBehaviour):
+    class SendBehaviour(behaviour.CyclicBehaviour):
         def ShowHistory(self):
             print("Historico de Comunicações")
             ClearChat()
@@ -55,9 +56,11 @@ class MyAgent(agent.Agent):
                 choose = int(input())
 
             if choose == 1:
-                msg.body = "[request] qual Intervalo?"
+                msg.body = "qual Intervalo?"
+                msg.set_metadata("performative","request")
             elif choose == 2:
-                msg.body = "[subscribe] " + input("Digite um Valor para envio: ") 
+                msg.body = input("Digite um Valor para envio: ")
+                msg.set_metadata("performative","subscribe")
             elif choose == 3:
                 self.ShowHistory()
             if msg.body != "":
@@ -72,6 +75,7 @@ class MyAgent(agent.Agent):
             if msg:
                 self.agent.ChatHistory.append(msg.body)
                 print(f"{msg.body}")
+                sleep(1)
 
 #=============================================================
 

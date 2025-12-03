@@ -19,9 +19,9 @@ from random import randint
 from spade.template import Template
 
 def ThinkNumber():
-    val = randint(0,1000)
+    val = randint(0,10000)
     intervalmin = randint(0, val)
-    intervalmax = randint(val, 1000)
+    intervalmax = randint(val, 10000)
     return val, str(intervalmin) , str(intervalmax)
 
 
@@ -35,14 +35,17 @@ class MyAgent(agent.Agent):
         self.add_behaviour(self.Receiverequest(),templaterequest)   
         self.add_behaviour(self.Receivesubscribe(),templatesubscribe)   
         self.add_behaviour(self.SendBehaviour())
+        self.msgSender = ""
 
     class Receiverequest(behaviour.CyclicBehaviour):
         async def run(self):
             msg = await self.receive(timeout=10)
             if not msg:
                 return
-            self.agent.msgToSend = f"O intervalo é ({self.agent.intervalmin},{self.agent.intervalmax})"
+            self.agent.msgToSend = f"{self.agent.intervalmin},{self.agent.intervalmax}"
             self.agent.performativeToSend = "inform"
+            self.agent.msgSender = str(msg.sender)
+            print(f"Mensagem Recebida de: {msg.sender} , ({msg.body})")
     
     class Receivesubscribe(behaviour.CyclicBehaviour):
         async def run(self):
@@ -59,6 +62,9 @@ class MyAgent(agent.Agent):
             elif ReceivedValue == self.agent.number:
                 self.agent.msgToSend = "Valor Correto"
                 self.agent.performativeToSend = "inform-done"
+            self.agent.msgSender = str(msg.sender)
+            print(f"Mensagem Recebida de: {msg.sender} , ({msg.body})")
+
 
                
 
@@ -66,7 +72,7 @@ class MyAgent(agent.Agent):
         async def run(self):
             if self.agent.msgToSend == "" or self.agent.performativeToSend == "":
                 return
-            msg = Message(to="AgtGustavo@localhost")
+            msg = Message(to=self.agent.msgSender)
             msg.body = self.agent.msgToSend
             msg.set_metadata("performative",self.agent.performativeToSend)
             await self.send(msg)
@@ -78,11 +84,7 @@ class MyAgent(agent.Agent):
 
 async def main():
     agt = MyAgent("AgentePedro@localhost", "senha123")
-    try:
-        await agt.start(auto_register=True)
-    except Exception as e:
-        print("Erro ao iniciar agente:", e)
-        return
+    await agt.start(auto_register=True)
 
     await asyncio.sleep(1)
     #   system("clear")

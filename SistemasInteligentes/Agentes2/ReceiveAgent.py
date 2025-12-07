@@ -86,7 +86,6 @@ async def main():
 
     await asyncio.sleep(1)
     #   system("clear")
-    print("Agente iniciado. Pressione CTRL+C para sair.\n")
 
     try:
         while True:
@@ -97,3 +96,7 @@ async def main():
 
 if __name__ == "__main__":
     asyncio.run(main())
+
+"""
+adicionar response
+"""

@@ -27,10 +27,13 @@ def ClearChat():
 
 class MyAgent(agent.Agent):
     async def setup(self):
+
         self.ChatHistory = []
         self.add_behaviour(self.SendBehaviour())  
         self.add_behaviour(self.ReceiveBehaviour())
         self.lastReceivedMSG = ""
+
+
     class SendBehaviour(behaviour.CyclicBehaviour):
         def ShowHistory(self):
             ClearChat()
@@ -90,7 +93,7 @@ class MyAgent(agent.Agent):
     class ReceiveBehaviour(behaviour.CyclicBehaviour):
         async def run(self):
             try:
-                msg = await self.receive(timeout=1)  # Timeout menor para responsividade
+                msg = await self.receive(timeout=10)  # Timeout menor para responsividade
                 if msg:
                     received_msg = f"{msg.body}"
                     self.agent.ChatHistory.append(received_msg)

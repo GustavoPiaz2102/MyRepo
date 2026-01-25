@@ -1,0 +1,5 @@
+{"name": "Padrao", "type": "color", "r": 0, "g": 255, "b": 0, "price": 0}
+{"name": "OldSchool", "type": "char", "symbol": "#", "r": 0, "g": 255, "b": 0, "price": 50}
+{"name": "Matematica", "type": "char", "symbol": "Pi", "r": 255, "g": 0, "b": 255, "price": 100}
+{"name": "Realista", "type": "sprite", "path": "snake.png", "price": 500}
+{"name": "Ouro", "type": "color", "r": 255, "g": 215, "b": 0, "price": 200}

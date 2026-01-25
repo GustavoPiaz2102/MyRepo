@@ -1,1 +1,0 @@
-/usr/bin/c++ -Wl,--dependency-file=CMakeFiles/MyGame.dir/link.d CMakeFiles/MyGame.dir/controller/main.cpp.o CMakeFiles/MyGame.dir/model/itens.cpp.o CMakeFiles/MyGame.dir/model/lowscale.cpp.o CMakeFiles/MyGame.dir/model/objects.cpp.o CMakeFiles/MyGame.dir/view/interface.cpp.o -o MyGame  -lsfml-graphics -lsfml-window -lsfml-system -lsfml-audio -lsfml-network

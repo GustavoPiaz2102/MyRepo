@@ -20,7 +20,7 @@ SMALL_SUBDIR = "small"
 SHINY_RATE = 1 / 128
 
 def load_stats():
-	default = {"Captured": {}, "AtualLevel": 1, "ExpToNextLevel": 50, "CurrentExp": 0}
+	default = {"Captured": {}, "AtualLevel": 1, "ExpToNextLevel": 50, "CurrentExp": 0, "LastDetectedTime": 0}
 	if not os.path.exists(STATS_FILE):
 		return default
 	try:
@@ -57,8 +57,7 @@ def list_captured():
 	print("-" * 42)
 	print(f"Total de capturas: {total}\n")
 
-def process_capture(pokemon_name, p_id, is_shiny):
-	stats = load_stats()
+def process_capture(pokemon_name, p_id, is_shiny, stats):
 	p_id_str = str(p_id)
 	print(f"\n\033[1;34m[?]\033[0m Um {pokemon_name.capitalize()}{' SHINY' if is_shiny else ''} apareceu!")
 	choice = input("Pressione [ENTER] para capturar ou qualquer tecla para fugir: ")
@@ -74,6 +73,7 @@ def process_capture(pokemon_name, p_id, is_shiny):
 			key = "shiny" if is_shiny else "regular"
 			stats["Captured"][p_id_str][key] += 1
 			stats["CurrentExp"] += 100
+			stats["LastDetectedTime"] = time.time()
 			print(f"\033[1;32m[*]\033[0m Gotcha! {pokemon_name.capitalize()} capturado!")
 			while stats["CurrentExp"] >= stats["ExpToNextLevel"]:
 				stats["CurrentExp"] -= stats["ExpToNextLevel"]
@@ -87,6 +87,15 @@ def process_capture(pokemon_name, p_id, is_shiny):
 		print(f"\033[1;90m[-] Você fugiu do combate...\033[0m")
 
 def show_encounter(is_tiny):
+	stats = load_stats()
+	current_time = time.time()
+	last_time = stats.get("LastDetectedTime", 0)
+	
+	if current_time - last_time < 60:
+		wait_time = int(60 - (current_time - last_time))
+		print(f"\033[1;31m[!] Os Pokémons estão assustados. Espere {wait_time}s para procurar novamente.\033[0m")
+		return
+
 	p_id = random.randint(1, 898)
 	is_shiny = random.random() <= SHINY_RATE
 	name = get_pokemon_name(p_id)
@@ -98,7 +107,7 @@ def show_encounter(is_tiny):
 			print(f.read())
 	title = f"{name} (SHINY)" if is_shiny else name
 	print(f"\033[1m{title.upper()}\033[0m")
-	process_capture(name, p_id, is_shiny)
+	process_capture(name, p_id, is_shiny, stats)
 
 def main():
 	parser = argparse.ArgumentParser(add_help=False)

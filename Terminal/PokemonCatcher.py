@@ -6,6 +6,8 @@ import os
 import random
 import sys
 import time
+import tty
+import termios
 
 PROGRAM = os.path.realpath(__file__)
 PROGRAM_DIR = os.path.dirname(PROGRAM)
@@ -38,24 +40,107 @@ def get_pokemon_name(p_id):
 		pokemon_list = json.load(file)
 		return pokemon_list[p_id - 1]["name"]
 
+def get_char():
+	fd = sys.stdin.fileno()
+	old_settings = termios.tcgetattr(fd)
+	try:
+		tty.setraw(sys.stdin.fileno())
+		ch = sys.stdin.read(1)
+		if ch == '\x1b':
+			ch += sys.stdin.read(2)
+	finally:
+		termios.tcsetattr(fd, termios.TCSADRAIN, old_settings)
+	return ch
+
 def list_captured():
 	stats = load_stats()
 	captured = stats.get("Captured", {})
+	
 	if not captured:
 		print("\033[1;31mVocê ainda não capturou nenhum Pokémon!\033[0m")
 		return
-	print(f"\n\033[1;35m--- SUA COLEÇÃO (Nível {stats['AtualLevel']}) ---\033[0m")
-	print(f"{'Pokémon':<20} | {'Normal':<8} | {'Shiny':<8}")
-	print("-" * 42)
-	for p_id_str, counts in sorted(captured.items(), key=lambda x: int(x[0])):
-		name = get_pokemon_name(int(p_id_str))
-		reg = counts.get("regular", 0)
-		shi = counts.get("shiny", 0)
-		name_display = f"\033[1;32m{name.capitalize()}\033[0m" if shi > 0 else name.capitalize()
-		print(f"{name_display:<29} | {reg:<8} | {shi:<8}")
-	total = sum(c.get("regular", 0) + c.get("shiny", 0) for c in captured.values())
-	print("-" * 42)
-	print(f"Total de capturas: {total}\n")
+
+	tabs = ["regular", "shiny"]
+	tab_idx = 0
+	current_index = 0
+
+	while True:
+		current_tab = tabs[tab_idx]
+		filtered_ids = [p_id for p_id, counts in captured.items() if counts.get(current_tab, 0) > 0]
+		filtered_ids.sort(key=lambda x: int(x))
+
+		if current_index >= len(filtered_ids) and len(filtered_ids) > 0:
+			current_index = len(filtered_ids) - 1
+		elif len(filtered_ids) == 0:
+			current_index = 0
+
+		print("\033[H\033[J", end="")
+		
+		print(f"\033[1;35m--- POKÉDEX (Nível {stats['AtualLevel']}) ---\033[0m")
+		print("\033[1;37m[←/→] Mudar Aba  |  [↑/↓] Selecionar  |  [Q] Sair\033[0m")
+		
+		reg_color = "\033[1;30;46m" if current_tab == "regular" else "\033[1;36m"
+		shi_color = "\033[1;30;43m" if current_tab == "shiny" else "\033[1;33m"
+		
+		print(f"{reg_color}  NORMAL  \033[0m {shi_color}  SHINY ★  \033[0m\n")
+
+		image_lines = []
+		if filtered_ids:
+			sel_id = filtered_ids[current_index]
+			sel_name = get_pokemon_name(int(sel_id))
+			sel_count = captured[sel_id][current_tab]
+			
+			img_path = f"{COLORSCRIPTS_DIR}/{SMALL_SUBDIR}/{current_tab}/{sel_name}"
+			if os.path.exists(img_path):
+				with open(img_path, "r") as f:
+					image_lines = [line.rstrip() for line in f.readlines()]
+
+			menu_width = 25
+			max_display = 12
+			start_view = max(0, current_index - 5)
+			
+			for i in range(max(max_display, len(image_lines))):
+				line_idx = start_view + i
+				if i < max_display and line_idx < len(filtered_ids):
+					p_id = filtered_ids[line_idx]
+					name = get_pokemon_name(int(p_id))
+					is_sel = (line_idx == current_index)
+					
+					prefix = "» " if is_sel else "  "
+					text = f"{prefix}{name.capitalize()}"
+					padding = " " * (menu_width - len(text))
+					
+					if is_sel:
+						color = "\033[1;97;46m" if current_tab == "regular" else "\033[1;97;43m"
+					else:
+						color = "\033[0m"
+					
+					print(f"{color}{text}{padding}\033[0m", end="  ")
+				else:
+					print(" " * (menu_width + 2), end="")
+
+				if i < len(image_lines):
+					print(image_lines[i], end="")
+				print()
+
+			print(f"\n\033[1mCapturados:\033[0m {sel_count}")
+		else:
+			print(f"\n\n\033[1;90m   Nenhum Pokémon nesta categoria...\033[0m")
+
+		key = get_char()
+		if key in ('\x1b[A', 'w', 'W'):
+			if filtered_ids: current_index = (current_index - 1) % len(filtered_ids)
+		elif key in ('\x1b[B', 's', 'S'):
+			if filtered_ids: current_index = (current_index + 1) % len(filtered_ids)
+		elif key in ('\x1b[D', 'a', 'A'):
+			tab_idx = (tab_idx - 1) % 2
+			current_index = 0
+		elif key in ('\x1b[C', 'd', 'D'):
+			tab_idx = (tab_idx + 1) % 2
+			current_index = 0
+		elif key in ('q', 'Q', '\x1b'):
+			print("\033[H\033[J", end="")
+			break
 
 def process_capture(pokemon_name, p_id, is_shiny, stats):
 	p_id_str = str(p_id)

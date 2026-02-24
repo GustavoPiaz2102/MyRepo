@@ -62,6 +62,7 @@ def process_capture(pokemon_name, p_id, is_shiny, stats):
 	print(f"\n\033[1;34m[?]\033[0m Um {pokemon_name.capitalize()}{' SHINY' if is_shiny else ''} apareceu!")
 	choice = input("Pressione [ENTER] para capturar ou qualquer tecla para fugir: ")
 	if choice == "":
+		stats["LastDetectedTime"] = time.time()
 		print("Lançando Pokébola", end="", flush=True)
 		for _ in range(3):
 			time.sleep(0.4)
@@ -73,16 +74,15 @@ def process_capture(pokemon_name, p_id, is_shiny, stats):
 			key = "shiny" if is_shiny else "regular"
 			stats["Captured"][p_id_str][key] += 1
 			stats["CurrentExp"] += 100
-			stats["LastDetectedTime"] = time.time()
 			print(f"\033[1;32m[*]\033[0m Gotcha! {pokemon_name.capitalize()} capturado!")
 			while stats["CurrentExp"] >= stats["ExpToNextLevel"]:
 				stats["CurrentExp"] -= stats["ExpToNextLevel"]
 				stats["AtualLevel"] += 1
 				stats["ExpToNextLevel"] = round(stats["ExpToNextLevel"] * 1.1, 2)
 				print(f"\033[1;35m[\u231b]\033[0m LEVEL UP! Nível {stats['AtualLevel']}!")
-			save_stats(stats)
 		else:
 			print(f"\033[1;31m[X]\033[0m O {pokemon_name.capitalize()} quebrou a Pokébola e fugiu!")
+		save_stats(stats)
 	else:
 		print(f"\033[1;90m[-] Você fugiu do combate...\033[0m")
 
@@ -90,12 +90,10 @@ def show_encounter(is_tiny):
 	stats = load_stats()
 	current_time = time.time()
 	last_time = stats.get("LastDetectedTime", 0)
-	
 	if current_time - last_time < 60:
 		wait_time = int(60 - (current_time - last_time))
 		print(f"\033[1;31m[!] Os Pokémons estão assustados. Espere {wait_time}s para procurar novamente.\033[0m")
 		return
-
 	p_id = random.randint(1, 898)
 	is_shiny = random.random() <= SHINY_RATE
 	name = get_pokemon_name(p_id)

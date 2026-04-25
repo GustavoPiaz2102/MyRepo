@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1200</width>
+    <height>720</height>
+   </rect>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>800</width>
+    <height>500</height>
+   </size>
+  </property>
+  <property name="windowTitle">
+   <string>BIA — Interface Neural</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <layout class="QVBoxLayout" name="root_layout">
+    <property name="spacing"><number>0</number></property>
+    <property name="contentsMargins"><rect><x>0</x><y>0</y><x>0</x><y>0</y></rect></property>
+
+    <!-- Info bar no topo (widget customizado, altura fixa 38px) -->
+    <item>
+     <widget class="InfoBar" name="info_bar">
+      <property name="minimumSize"><size><width>0</width><height>38</height></size></property>
+      <property name="maximumSize"><size><width>16777215</width><height>38</height></size></property>
+     </widget>
+    </item>
+
+    <!-- Separador horizontal -->
+    <item>
+     <widget class="QFrame" name="top_separator">
+      <property name="minimumSize"><size><width>0</width><height>1</height></size></property>
+      <property name="maximumSize"><size><width>16777215</width><height>1</height></size></property>
+      <property name="frameShape"><enum>QFrame::HLine</enum></property>
+     </widget>
+    </item>
+
+    <!-- Corpo principal (HUD à esquerda, chat à direita) -->
+    <item>
+     <layout class="QHBoxLayout" name="body_layout">
+      <property name="spacing"><number>0</number></property>
+      <property name="contentsMargins"><rect><x>0</x><y>0</y><x>0</x><y>0</y></rect></property>
+
+      <!-- Coluna esquerda: HUD + atalhos -->
+      <item>
+       <widget class="QWidget" name="left_panel">
+        <property name="minimumSize"><size><width>300</width><height>0</height></size></property>
+        <property name="maximumSize"><size><width>300</width><height>16777215</height></size></property>
+        <layout class="QVBoxLayout" name="left_layout">
+         <property name="spacing"><number>0</number></property>
+         <property name="contentsMargins"><rect><x>0</x><y>0</y><x>0</x><y>0</y></rect></property>
+
+         <!-- HUD animado (widget customizado, expande) -->
+         <item>
+          <widget class="HUDWidget" name="hud">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+             <horstretch>0</horstretch>
+             <verstretch>1</verstretch>
+            </sizepolicy>
+           </property>
+          </widget>
+         </item>
+
+         <!-- Label de atalhos no rodapé -->
+         <item>
+          <widget class="QLabel" name="shortcuts_label">
+           <property name="minimumSize"><size><width>0</width><height>30</height></size></property>
+           <property name="maximumSize"><size><width>16777215</width><height>30</height></size></property>
+           <property name="text">
+            <string>Enter → enviar    Ctrl+L → limpar    Ctrl+Q → sair</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignCenter</set>
+           </property>
+          </widget>
+         </item>
+
+        </layout>
+       </widget>
+      </item>
+
+      <!-- Coluna direita: chat + input -->
+      <item>
+       <widget class="QWidget" name="right_panel">
+        <layout class="QVBoxLayout" name="right_layout">
+         <property name="spacing"><number>0</number></property>
+         <property name="contentsMargins"><rect><x>0</x><y>0</y><x>0</x><y>0</y></rect></property>
+
+         <!-- Área de chat (widget customizado, expande) -->
+         <item>
+          <widget class="ChatDisplay" name="chat">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+             <horstretch>0</horstretch>
+             <verstretch>1</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="frameShape"><enum>QFrame::NoFrame</enum></property>
+           <property name="readOnly"><bool>true</bool></property>
+          </widget>
+         </item>
+
+         <!-- Separador acima do input -->
+         <item>
+          <widget class="QFrame" name="input_separator">
+           <property name="minimumSize"><size><width>0</width><height>1</height></size></property>
+           <property name="maximumSize"><size><width>16777215</width><height>1</height></size></property>
+           <property name="frameShape"><enum>QFrame::HLine</enum></property>
+          </widget>
+         </item>
+
+         <!-- Barra de input (widget customizado, altura fixa 52px) -->
+         <item>
+          <widget class="InputBar" name="input_bar">
+           <property name="minimumSize"><size><width>0</width><height>52</height></size></property>
+           <property name="maximumSize"><size><width>16777215</width><height>52</height></size></property>
+          </widget>
+         </item>
+
+        </layout>
+       </widget>
+      </item>
+
+     </layout>
+    </item>
+
+   </layout>
+  </widget>
+ </widget>
+
+ <!-- Registro dos widgets customizados para o Qt Designer reconhecer -->
+ <customwidgets>
+  <customwidget>
+   <class>HUDWidget</class>
+   <extends>QWidget</extends>
+   <header>bia</header>
+  </customwidget>
+  <customwidget>
+   <class>ChatDisplay</class>
+   <extends>QTextEdit</extends>
+   <header>bia</header>
+  </customwidget>
+  <customwidget>
+   <class>InputBar</class>
+   <extends>QWidget</extends>
+   <header>bia</header>
+  </customwidget>
+  <customwidget>
+   <class>InfoBar</class>
+   <extends>QWidget</extends>
+   <header>bia</header>
+  </customwidget>
+ </customwidgets>
+
+ <resources/>
+ <connections/>
+</ui>

@@ -103,7 +103,6 @@
             </sizepolicy>
            </property>
            <property name="frameShape"><enum>QFrame::NoFrame</enum></property>
-           <property name="readOnly"><bool>true</bool></property>
           </widget>
          </item>
 
@@ -144,7 +143,7 @@
   </customwidget>
   <customwidget>
    <class>ChatDisplay</class>
-   <extends>QTextEdit</extends>
+   <extends>QListWidget</extends>
    <header>bia</header>
   </customwidget>
   <customwidget>

@@ -7,14 +7,13 @@ import select
 import subprocess
 import getpass
 import socket
-import argparse  # Required for arguments
+import argparse
 from PIL import Image
 
 # --- DEFAULT SETTINGS ---
 DEFAULT_SCALE = 0.172
 CHARS = "@#S%?*+; ,. "
 
-# Get system user and hostname
 USER = getpass.getuser()
 HOSTNAME = socket.gethostname()
 
@@ -219,13 +218,28 @@ def get_system_info():
 def get_ansi_color(r, g, b):
 	return f"\033[38;2;{r};{g};{b}m"
 
+def compute_scale(gif_path, target_cols_fraction=0.40):
+	"""
+	Calcula a scale dinamicamente para que o GIF ocupe
+	`target_cols_fraction` da largura do terminal.
+	O fator 0.5 compensa que caracteres são mais altos que largos.
+	"""
+	term_cols, _ = shutil.get_terminal_size(fallback=(120, 40))
+	try:
+		img = Image.open(gif_path)
+		orig_w, _ = img.size
+	except Exception:
+		return DEFAULT_SCALE
+	target_cols = int(term_cols * target_cols_fraction)
+	return target_cols / orig_w
+
 def convert_gif_to_frames(path, scale):
 	try:
 		img = Image.open(path)
 	except Exception as e:
 		print(f"Error opening file: {e}")
 		sys.exit(1)
-		
+
 	frames = []
 	orig_w, orig_h = img.size
 	new_w = int(orig_w * scale)
@@ -252,7 +266,7 @@ def convert_gif_to_frames(path, scale):
 def key_pressed():
 	return select.select([sys.stdin], [], [], 0)[0] != []
 
-def run_neogif(gif_path, scale):
+def run_neogif(gif_path, scale, argumentsAdd = None):
 	sys_info = get_system_info()
 	frames_data = convert_gif_to_frames(gif_path, scale)
 	sys.stdout.write("\033[?25l")
@@ -266,6 +280,12 @@ def run_neogif(gif_path, scale):
 		termios.tcsetattr(fd, termios.TCSAFLUSH, new_settings)
 		while True:
 			for frame_lines, current_w in frames_data:
+				if scale != compute_scale(gif_path, argumentsAdd.fraction):
+					scale = compute_scale(gif_path, argumentsAdd.fraction)
+					frames_data = convert_gif_to_frames(gif_path, scale)
+					sys_info = get_system_info()
+					os.system('clear')
+					break
 				if key_pressed():
 					return
 				output = "\033[H"
@@ -288,9 +308,14 @@ def run_neogif(gif_path, scale):
 if __name__ == "__main__":
 	parser = argparse.ArgumentParser(description="Neogif: Displays system information with an ASCII GIF.")
 	parser.add_argument("path", help="Path to the .gif file")
-	parser.add_argument("--scale", type=float, default=DEFAULT_SCALE, help=f"Image scale (default: {DEFAULT_SCALE})")
-	
+	parser.add_argument("--scale", type=float, default=None,
+		help="Image scale manual (padrão: automático baseado no terminal)")
+	parser.add_argument("--fraction", type=float, default=0.40,
+		help="Fração da largura do terminal que o GIF deve ocupar (padrão: 0.40)")
+
 	args = parser.parse_args()
 
+	scale = args.scale if args.scale is not None else compute_scale(args.path, args.fraction)
+
 	os.system('clear')
-	run_neogif(args.path, args.scale)
+	run_neogif(args.path, scale,args)

@@ -47,7 +47,7 @@ CYAN    = QColor(0,   200, 180)
 # ─── Worker ───────────────────────────────────────────────────────────────────
 import subprocess, re
 
-MEMORY_FILE = Path.home() / "relevantInformations.txt"
+MEMORY_FILE = Path.home() / ".relevantInformations.txt"
 
 
 def _save_memory(content: str) -> str:

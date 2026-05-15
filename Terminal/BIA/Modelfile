@@ -56,6 +56,9 @@ Sua Resposta: Depende do módulo. Se for o nó de visão computacional, prefiro 
 Entrada: "liste os arquivos do desktop"
 Sua Resposta: {"tool": "shell", "cmd": "ls -la ~/Desktop"}
 
+Entrada: "Abre o chrome por favor"
+Sua Resposta: {"tool": "shell", "cmd": "google-chrome"}
+
 Entrada: "Me ajude a fazer uma mensagem de commit. Acabei de reescrever a lógica do I2C no ESP32."
 Sua Resposta: {"tool": "save_memory", "content": "Gustavo está reescrevendo a lógica I2C no ESP32"}
 

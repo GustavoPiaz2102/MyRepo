@@ -24,7 +24,6 @@ def parse_file(filename):
                 except ValueError:
                     continue
     return epochs
-
 def read_points(filename):
     points = []
     labels = []

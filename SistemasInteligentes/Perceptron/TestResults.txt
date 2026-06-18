@@ -14,7 +14,7 @@ Input: [-1.767973, -0.548710], Expected: 0.000000, Predicted: 0
 Input: [2.109435, 0.532278], Expected: 1.000000, Predicted: 1
 Input: [2.089447, 1.437840], Expected: 1.000000, Predicted: 1
 Input: [-0.711213, 0.945517], Expected: 1.000000, Predicted: 0
-Input: [0.043468, 0.586763], Expected: 1.000000, Predicted: 1
+Input: [0.043468, 0.586763], Expected: 1.000000, Predicted: 0
 Input: [-1.477239, 1.877545], Expected: 0.000000, Predicted: 0
 Input: [0.376775, 0.676566], Expected: 1.000000, Predicted: 1
 Input: [-1.080288, 0.396496], Expected: 0.000000, Predicted: 0
@@ -34,12 +34,12 @@ Input: [1.014044, 0.096212], Expected: 1.000000, Predicted: 1
 Input: [0.493023, 2.612321], Expected: 0.000000, Predicted: 0
 Input: [-0.796665, 0.108775], Expected: 0.000000, Predicted: 0
 Input: [1.859121, 0.370156], Expected: 1.000000, Predicted: 1
-Input: [0.585710, 2.078390], Expected: 0.000000, Predicted: 0
+Input: [0.585710, 2.078390], Expected: 0.000000, Predicted: 1
 Input: [0.833251, 1.489549], Expected: 1.000000, Predicted: 1
-Input: [0.873926, 2.912831], Expected: 1.000000, Predicted: 0
+Input: [0.873926, 2.912831], Expected: 1.000000, Predicted: 1
 Input: [0.526882, 1.400472], Expected: 1.000000, Predicted: 1
 Input: [1.669655, 1.218149], Expected: 1.000000, Predicted: 1
-Input: [0.572268, 1.700438], Expected: 1.000000, Predicted: 0
+Input: [0.572268, 1.700438], Expected: 1.000000, Predicted: 1
 Input: [-2.764266, 2.750348], Expected: 0.000000, Predicted: 0
 Input: [0.728056, 0.938013], Expected: 1.000000, Predicted: 1
 Input: [2.150820, 1.066360], Expected: 1.000000, Predicted: 1

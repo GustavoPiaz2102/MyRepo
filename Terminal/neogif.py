@@ -319,3 +319,4 @@ if __name__ == "__main__":
 
 	os.system('clear')
 	run_neogif(args.path, scale,args)
+	os.system('clear')

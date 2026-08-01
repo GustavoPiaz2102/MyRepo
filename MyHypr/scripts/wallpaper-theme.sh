@@ -33,8 +33,7 @@ if [ -n "$TARGET" ]; then
 fi
 
 awww img "$APPLIED" \
-    --transition-type grow \
-    --transition-pos center \
+    --transition-type random \
     --transition-duration 1 \
     --transition-fps 60
 

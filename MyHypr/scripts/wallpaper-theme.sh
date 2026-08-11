@@ -10,7 +10,7 @@ set -u
 SOURCE="$1"
 TARGET="${2:-}"
 
-IRIS="$HOME/git/MyRepo/MyHypr/confs/quickshell/iris/iris.py"
+IRIS="$HOME/git/Myrepo/MyHypr/confs/quickshell/iris/iris.py"
 KITTY_COLORS="$HOME/.cache/qs/kitty-colors.conf"
 GTK4_CSS="$HOME/.config/gtk-4.0/gtk.css"
 GTK3_CSS="$HOME/.config/gtk-3.0/gtk.css"

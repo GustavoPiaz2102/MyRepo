@@ -24,7 +24,7 @@ local wallpaperBnd   = "/tmp/qs-wallpaper-toggle"
 -- agora é só uma chamada direta na config lua.
 hl.layer_rule({
     match = { namespace = "bar-0" },
-    on_demand_exclusive = false,
+    --on_demand_exclusive = false,
 })
 
 hl.on("hyprland.start", function()
@@ -90,25 +90,13 @@ end
 
 hl.bind("ALT + W", hl.dsp.exec_cmd("wtype ?"))
 
---------------------------------------
----- BINDS GERADOS PELO TIDE-ISLAND ----
---------------------------------------
--- ATENÇÃO: o arquivo abaixo é gerado pelo tide-island e, no seu .conf original,
--- estava sendo carregado com `source = ...`, ou seja, ele ainda usa a sintaxe
--- hyprlang antiga (não lua). O `source` do hyprlang não existe mais no formato
--- lua — o equivalente é `require(...)`, mas isso só funciona se o arquivo em
--- questão também for um módulo .lua válido.
---
--- Verifique se o tide-island já foi atualizado para gerar um
--- hyprland-shortcuts.lua. Se sim, troque a linha abaixo por:
---   require("tide-island/hyprland-shortcuts")
--- (sem a extensão .lua, com o caminho relativo à hyprland.lua)
---
--- Se ainda gerar .conf (hyprlang), a forma mais simples de manter funcionando
--- é rodar esse arquivo antigo via hyprctl na inicialização, algo como:
---   hl.on("hyprland.start", function()
---       hl.exec_cmd("hyprctl reload -- ~/.config/tide-island/hyprland-shortcuts.conf")
---   end)
--- Mas o ideal é falar com o mantenedor do tide-island sobre suporte a lua.
-
-require("tide-island/hyprland-shortcuts")
+hl.bind("SUPER + Tab", hl.dsp.exec_cmd("/usr/bin/quickshell ipc --any-display -p /usr/share/tide-island call overview toggle"))
+hl.bind("SUPER + Right", hl.dsp.exec_cmd("/usr/bin/quickshell ipc --any-display -p /usr/share/tide-island call tide swipeRight"))
+hl.bind("SUPER + Left", hl.dsp.exec_cmd("/usr/bin/quickshell ipc --any-display -p /usr/share/tide-island call tide swipeLeft"))
+hl.bind("SUPER + Down", hl.dsp.exec_cmd("/usr/bin/quickshell ipc --any-display -p /usr/share/tide-island call tide showClock"))
+hl.bind("SUPER + M", hl.dsp.exec_cmd("/usr/bin/quickshell ipc --any-display -p /usr/share/tide-island call tide togglePlayer"))
+hl.bind("SUPER + C", hl.dsp.exec_cmd("/usr/bin/quickshell ipc --any-display -p /usr/share/tide-island call tide toggleControlCenter"))
+hl.bind("SUPER + N", hl.dsp.exec_cmd("/usr/bin/quickshell ipc --any-display -p /usr/share/tide-island call tide toggleNotificationCenter"))
+hl.bind("SUPER + W", hl.dsp.exec_cmd("/usr/bin/quickshell ipc --any-display -p /usr/share/tide-island call tide toggleWallpaperPicker"))
+hl.bind("Super_L", hl.dsp.exec_cmd("/usr/bin/quickshell ipc --any-display -p /usr/share/tide-island call tide toggleApplicationLauncher"))
+hl.bind("SUPER + F", hl.dsp.exec_cmd("/usr/bin/quickshell ipc --any-display -p /usr/share/tide-island call island toggle"))
